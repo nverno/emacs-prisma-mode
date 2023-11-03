@@ -33,40 +33,39 @@
 ;;; Code:
 
 (when (require 'lsp-mode nil 'noerror)
-	(require 'lsp-prisma))
+  (require 'lsp-prisma))
+(defvar js-indent-level)
 
-(setq prisma-font-lock-keywords
-      (let* (
-             ;; We match `model Album {', and highlight `model' as keyword and `Album' as type.
-             ;; Same rules for `enum`, `datasource` and `type'.
-             (x-keywords-regexp "^\s*\\(model\\|enum\\|datasource\\|generator\\|type\\)\s+\\([a-zA-Z0-9_-]+\\)\s*{")
-             ;; Mathces the column name and type, hilighting the type.
-             (x-scalar-types-regexp "^\s+[a-zA-Z0-9_-]+\s+\\(Int\\|String\\|Boolean\\|DateTime\\|Float\\|Decimal\\|Json\\|[a-zA-Z0-9_-]+\\)")
-             ;; A field attribute, such as `@id' or `@map', comes after the column type.
-             (x-field-attributes-regexp "\@\\(id\\|map\\|default\\|relation\\|unique\\|ignore\\)")
-             ;; A block attribute, usually at the end of a block such as model definition.
-             ;; Example: `@@id([user_name, email])'
-             (x-block-attributes-regexp "\@@\\(id\\|map\\|unique\\|index\\|ignore\\|fulltext\\)")
-             ;; A native type definition, such as `@db.VarChar(255)'
-             (x-native-types-regexp "\@[a-zA-Z0-9_-]+\.[a-zA-Z]+")
-             ;; Properties in an attribute, e.g. `fields: [MediaTypeId]'.
-             (x-properties-regexp "[a-zA-Z_-]+:")
-             ;; Builtin functions. E.g. `autoincrement()'
-             (x-attribute-functions-regexp "\\(autoincrement\\|cuid\\|uuid\\|now\\|env\\|dbgenerated\\)\(\.*\)")
-             ;; Constants
-             (x-constants-regexp "\\(true\\|false\\|null\\)")
-             )
-        `(
-          ;; order matters
-          (,x-block-attributes-regexp . font-lock-preprocessor-face)
-          (,x-field-attributes-regexp . font-lock-preprocessor-face)
-          (,x-attribute-functions-regexp . (1 font-lock-function-name-face))
-          (,x-native-types-regexp . font-lock-preprocessor-face)
-          (,x-keywords-regexp (1 font-lock-keyword-face) (2 font-lock-type-face))
-          (,x-properties-regexp . font-lock-variable-name-face)
-          (,x-scalar-types-regexp . (1 font-lock-type-face))
-          (,x-constants-regexp . font-lock-constant-face)
-          )))
+(defvar prisma-font-lock-keywords
+  (let* (
+         ;; We match `model Album {', and highlight `model' as keyword and `Album' as type.
+         ;; Same rules for `enum`, `datasource` and `type'.
+         (x-keywords-regexp "^\s*\\(model\\|enum\\|datasource\\|generator\\|type\\)\s+\\([a-zA-Z0-9_-]+\\)\s*{")
+         ;; Mathces the column name and type, hilighting the type.
+         (x-scalar-types-regexp "^\s+[a-zA-Z0-9_-]+\s+\\(Int\\|String\\|Boolean\\|DateTime\\|Float\\|Decimal\\|Json\\|[a-zA-Z0-9_-]+\\)")
+         ;; A field attribute, such as `@id' or `@map', comes after the column type.
+         (x-field-attributes-regexp "\@\\(id\\|map\\|default\\|relation\\|unique\\|ignore\\)")
+         ;; A block attribute, usually at the end of a block such as model definition.
+         ;; Example: `@@id([user_name, email])'
+         (x-block-attributes-regexp "\@@\\(id\\|map\\|unique\\|index\\|ignore\\|fulltext\\)")
+         ;; A native type definition, such as `@db.VarChar(255)'
+         (x-native-types-regexp "\@[a-zA-Z0-9_-]+\.[a-zA-Z]+")
+         ;; Properties in an attribute, e.g. `fields: [MediaTypeId]'.
+         (x-properties-regexp "[a-zA-Z_-]+:")
+         ;; Builtin functions. E.g. `autoincrement()'
+         (x-attribute-functions-regexp "\\(autoincrement\\|cuid\\|uuid\\|now\\|env\\|dbgenerated\\)\(\.*\)")
+         ;; Constants
+         (x-constants-regexp "\\(true\\|false\\|null\\)"))
+    `(
+      ;; order matters
+      (,x-block-attributes-regexp . font-lock-preprocessor-face)
+      (,x-field-attributes-regexp . font-lock-preprocessor-face)
+      (,x-attribute-functions-regexp . (1 font-lock-function-name-face))
+      (,x-native-types-regexp . font-lock-preprocessor-face)
+      (,x-keywords-regexp (1 font-lock-keyword-face) (2 font-lock-type-face))
+      (,x-properties-regexp . font-lock-variable-name-face)
+      (,x-scalar-types-regexp . (1 font-lock-type-face))
+      (,x-constants-regexp . font-lock-constant-face))))
 
 ;;;###autoload
 (define-derived-mode prisma-mode js-mode "Prisma"
