@@ -34,7 +34,10 @@
 
 (when (require 'lsp-mode nil 'noerror)
   (require 'lsp-prisma))
+
 (defvar js-indent-level)
+(defvar c-basic-offset)
+(defvar c-syntactic-indentation)
 
 (defvar prisma-font-lock-keywords
   (let* (
